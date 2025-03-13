@@ -43,11 +43,33 @@ public class Parametre
 // classe qui defini une tache
 public class Tache
 {
-    private String titre;
-    private String description;
+    private string titre;
+    private string description;
     private int importance;
 
-    public Tache(String titre, String description, int importance)
+    // Propriétés publiques pour la sérialisation/désérialisation
+    public string Titre
+    {
+        get => titre;
+        set => titre = value;
+    }
+
+    public string Description
+    {
+        get => description;
+        set => description = value;
+    }
+
+    public int Importance
+    {
+        get => importance;
+        set => importance = value;
+    }
+
+    // Constructeur sans paramètre pour la désérialisation
+    public Tache() { }
+
+    public Tache(string titre, string description, int importance)
     {
         this.titre = titre;
         this.description = description;
@@ -143,6 +165,16 @@ public class Program
         taskList[index].affImportance();
     }
 
+    public static void afficherToutes(List<Tache> taskList)
+    {
+        int numTache = 0;
+        foreach (var taches in taskList)
+        {
+            Console.WriteLine(numTache + ". " + taches.getTitre());
+            numTache++;
+        }
+    }
+
     // fonction qui tri les taches par importance
     public static void triImportance(List<Tache> taskList)
     {
@@ -201,9 +233,9 @@ public class Program
 
         using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
         {
-            string tri = reader.ReadString();
             string enregistrement = reader.ReadString();
-            return new Parametre(tri, enregistrement);
+            string tri = reader.ReadString();
+            return new Parametre(enregistrement, tri);
         }
     }
     
@@ -217,14 +249,38 @@ public class Program
         }
     }
     
+    public static void SauvegarderTaches(List<Tache> taskList)
+    {
+        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "taches.json");
+        string json = JsonSerializer.Serialize(taskList);
+        File.WriteAllText(filePath, json);
+    }
+    
+    public static List<Tache> ChargerTaches()
+    {
+        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "taches.json");
+        if (!File.Exists(filePath))
+            return new List<Tache>(); // Retourne une liste vide si le fichier n'existe pas
+
+        string json = File.ReadAllText(filePath);
+        return JsonSerializer.Deserialize<List<Tache>>(json);
+    }
+
+    public static List<Tache> listeMaker(List<Tache> taskList)
+    {
+        if (taskList[0].getTitre() == null)
+            return new List<Tache>();
+        return taskList;
+    }
+    
     // fonction principale que je vais lancer dans le main dans Program.cs
     public static void Main(String[] args)
     {
         Parametre parametre = recupParam();
-        List<Tache> taskList = new List<Tache>();
+        List<Tache> taskList = listeMaker(ChargerTaches());
         int choix = 1;
         int numTache = 0;
-        while (choix != 10)
+        while (choix != 8)
         {
             Console.WriteLine("que veux tu faire ?");
             Console.WriteLine("1. ajouter une tache");
@@ -233,10 +289,8 @@ public class Program
             Console.WriteLine("4. afficher une tache entierement");
             Console.WriteLine("5. modifier une tache");
             Console.WriteLine("6. trier la liste");
-            Console.WriteLine("7. sauvegarder une tache");
-            Console.WriteLine("9. parametres");
-            // les taches seront supprimées quand on quitte le programme et sont chargées quand le programme se lance
-            Console.WriteLine("10. quitter");
+            Console.WriteLine("7. parametres");
+            Console.WriteLine("8. quitter");
             choix = int.Parse(Console.ReadLine());
             switch (choix)
             {
@@ -248,31 +302,21 @@ public class Program
                         triImportance(taskList);
                     else
                         triAlpha(taskList);
+                    SauvegarderTaches(taskList);
                     break;
                 
                 // option pour supprimer une tache
                 case 2:
-                    Console.WriteLine("quel est le titre de la tache que tu veux supprimer ?\n");
-                    String tacheAsupprimer = Console.ReadLine();
-                    // modifier pour que ca demande le numero de la tache a supprimer
-                    for (int i = taskList.Count - 1; i >= 0; i--)
-                    {
-                        if (taskList[i].getTitre().Equals(tacheAsupprimer))
-                        {
-                            taskList.RemoveAt(i);
-                            break;
-                        }
-                    }
+                    Console.WriteLine("quel est le numero de la tache que tu veux supprimer ?\n");
+                    afficherToutes(taskList);
+                    int tacheAsupprimer = int.Parse(Console.ReadLine());
+                    taskList.RemoveAt(tacheAsupprimer);
+                    SauvegarderTaches(taskList);
                     break;
                 
                 // option pour voir toutes les taches
                 case 3:
-                    numTache = 0;
-                    foreach (var taches in taskList)
-                    {
-                        Console.WriteLine(numTache + ". " + taches.getTitre());
-                        numTache++;
-                    }
+                    afficherToutes(taskList);
                     break;
                 
                 // option pour voir le detail d'une tache
@@ -317,9 +361,10 @@ public class Program
                         int newImportance = int.Parse(Console.ReadLine());
                         taskList[numTache].setImportance(newImportance);
                     }
+                    SauvegarderTaches(taskList);
                     break;
                 
-                // option pour trier la liste des taches 
+                // option pour trier la liste des tâches 
                 case 6:
                     Console.Clear();
                     int choixTri = 0;
@@ -346,10 +391,11 @@ public class Program
                                 break;
                         }
                     }
+                    SauvegarderTaches(taskList);
                     break;
                 
                     // changer les parametres
-                    case 9:
+                    case 7:
                         Console.Clear();
                         int choixParam = 0;
                         int choixTriP = 0;
