@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager/taskManager.csproj": {}
+    "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager.csproj": {}
   },
   "projects": {
-    "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager/taskManager.csproj": {
+    "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager/taskManager.csproj",
+        "projectUniqueName": "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager.csproj",
         "projectName": "taskManager",
-        "projectPath": "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager/taskManager.csproj",
+        "projectPath": "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager.csproj",
         "packagesPath": "/Users/alexisdupont/.nuget/packages/",
-        "outputPath": "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/taskManager/obj/",
+        "outputPath": "/Users/alexisdupont/RiderProjects/learn/taskManager/taskManager/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/alexisdupont/.nuget/NuGet/NuGet.Config"
